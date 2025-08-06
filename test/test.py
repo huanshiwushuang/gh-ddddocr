@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 
 # 直接导入上一级目录下的ddddocr文件夹中的代码
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -7,9 +8,12 @@ from ddddocr import DdddOcr
 
 import cv2
 
-# 定义输入输出目录
-src_dir = os.path.join(os.getcwd(), "src")
-dist_dir = os.path.join(os.getcwd(), "dist")
+# 当前目录为本文件所在目录
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 定义输入输出目录（相对于当前文件目录）
+src_dir = os.path.join(base_dir, "src")
+dist_dir = os.path.join(base_dir, "dist")
 
 # 创建输出目录（如果不存在）
 os.makedirs(dist_dir, exist_ok=True)
@@ -28,8 +32,13 @@ for filename in os.listdir(src_dir):
         with open(src_path, 'rb') as f:
             image = f.read()
 
+        start_time = time.time()
         bboxes = det.detection(image)
+        end_time = time.time()
+        elapsed = end_time - start_time
+
         print(f"{filename} 检测到的框: {bboxes}")
+        print(f"{filename} 处理耗时: {elapsed:.4f} 秒")
 
         im = cv2.imread(src_path)
 
